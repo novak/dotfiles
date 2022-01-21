@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export EDITOR=vim
+
+export HISTCONTROL=ignoredups
+export HISTIGNORE="ls:ls *:cd:cd -:pwd;exit:date:* --help"
+
+export PYENV_ROOT="$HOME/.pyenv"
+

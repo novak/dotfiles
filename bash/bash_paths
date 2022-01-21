@@ -1,0 +1,18 @@
+#!/bin/bash
+
+declare -a dirs_to_prepend=(
+  "$HOME/.rbenv/bin"
+  "$PYENV_ROOT/bin"
+  "/usr/local/go/bin"
+)
+
+for index in ${!dirs_to_prepend[*]}
+do
+  if [ -d "${dirs_to_prepend[$index]}" ]; then
+    PATH="${dirs_to_prepend[$index]}:$PATH"
+  fi
+done
+
+unset dirs_to_prepend
+
+export PATH

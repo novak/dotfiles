@@ -1,0 +1,13 @@
+[alias]
+  who = shortlog --numbered --summary --email --no-merges --since="3 months"
+  cleanup = !git clean -df && git stash clear
+
+[core]
+  excludesfile = ~/.gitignore
+
+[color]
+  ui = auto
+  interactive = auto
+
+[pretty]
+  nice = "%C(yellow)%h%C(reset) %C(white)%s%C(cyan)%d%C(reset) -- %an; %ar"

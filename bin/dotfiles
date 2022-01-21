@@ -1,0 +1,69 @@
+#!/bin/bash
+
+DOTFILES_DIRECTORY="${HOME}/.dotfiles"
+DOTFILES_TARBALL_PATH="https://github.com/novak/dotfiles/tarball/master"
+DOTFILES_GIT_REMOTE="https://github.com/novak/dotfiles"
+
+for opt in $@
+do
+  case $opt in
+    --remote) remote=true ;;
+  esac
+done
+
+link() {
+  ln -fs "${DOTFILES_DIRECTORY}/${1}" "${HOME}/${2}"
+}
+
+setup_files() {
+  link "ack/ackrc" ".ackrc"
+  link "bash/bashrc" ".bashrc"
+  link "bash/bash_functions" ".bash_functions"
+  link "bash/bash_exports" ".bash_exports"
+  link "bash/bash_paths" ".bash_paths"
+  link "bash/bash_profile" ".bash_profile"
+  link "bash/bash_prompt" ".bash_prompt"
+  link "git/gitconfig" ".gitconfig"
+  link "git/gitignore" ".gitignore"
+  link "vim/vimrc" ".vimrc"
+  link "git/completion" ".git_completion.sh"
+
+  if [ ! -e "$HOME/.vim/bundle/Vundle.vim" ]; then
+    git clone --quiet https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim > /dev/null
+  fi
+
+  if [ ! -e "$HOME/.rbenv" ]; then
+    git clone --quiet https://github.com/rbenv/rbenv.git ~/.rbenv > /dev/null
+    git clone --quiet https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build > /dev/null
+  fi
+
+  if [ ! -e "$HOME/.pyenv" ]; then
+    git clone --quiet https://github.com/pyenv/pyenv.git ~/.pyenv > /dev/null
+  fi
+
+  if [ ! -e "$HOME/.vim/backups" ]; then
+    mkdir -p "$HOME/.vim/backups"
+  fi
+
+  if [ ! -e "$HOME/.vim/swaps" ]; then
+    mkdir -p "$HOME/.vim/swaps"
+  fi
+}
+
+if [[ $remote ]]; then
+  printf "Downloading dotfiles...\n"
+  mkdir ${DOTFILES_DIRECTORY}
+
+  curl -fsSLo ${HOME}/dotfiles.tar.gz ${DOTFILES_TARBALL_PATH}
+  tar -zxf ${HOME}/dotfiles.tar.gz --strip-components 1 -C ${DOTFILES_DIRECTORY}
+  rm -rf ${HOME}/dotfiles.tar.gz
+
+  setup_files
+else
+  printf "Copying dotfiles...\n"
+  rsync -avz --quiet $(pwd)/* ${DOTFILES_DIRECTORY}
+
+  setup_files
+fi
+
+source "${HOME}/.bash_profile"

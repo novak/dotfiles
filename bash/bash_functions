@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# mounts a case sensitive disk image on macOS for the android platform.
+function mountAndroid() {
+  hdiutil attach ~/.android.dmg.sparseimage -mountpoint /Volumes/android;
+}
+
+# unmounts the attached case sensitive volume on macOS.
+function unmountAndroid() {
+  hdiutil detach /Volumes/android;
+}
+
